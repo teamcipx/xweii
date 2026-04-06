@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+<!-- ================= SEO & TITLE ================= -->
+{% block title %}Admin Verification | Social Orbit{% endblock %}
+{% block description %}Admin panel for verifying crypto orders and approving submitted Gmail accounts.{% endblock %}
+{% block keywords %}admin dashboard, verification{% endblock %}
+
+{% block nav_title %}Admin Control{% endblock %}
+{% block nav_admin %}active{% endblock %}
+
+<!-- ================= PAGE SPECIFIC CSS ================= -->
+{% block extra_css %}
+<style>
+    .admin-card { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f39c12; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
+    .admin-card.crypto { border-left-color: #3498db; }
+    .admin-card p { font-size: 14px; margin-bottom: 8px; color: #444; }
+    .action-btns { display: flex; gap: 10px; }
+    .btn-approve { flex: 1; background: #28a745; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+    .btn-reject { flex: 1; background: #dc3545; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold;}
+    .section-title { font-size: 15px; margin: 20px 0 10px 0; color: #666; font-weight: bold; text-transform: uppercase;}
+</style>
+{% endblock %}
+
+<!-- ================= CONTENT ================= -->
+{% block content %}
+
+<div class="section-title">🕒 Pending Gmail Tasks (6H Auto)</div>
+<div id="gmailList">Loading...</div>
+
+<div class="section-title">💰 Pending Crypto Orders</div>
+<div id="cryptoList">Loading...</div>
+
+{% endblock %}
+
+<!-- ================= PAGE SPECIFIC JS ================= -->
+{% block extra_js %}
+<script>
+    function loadData() {
+        fetch('/api/admin/pending').then(r => r.json()).then(data => {
+            // Load Gmails
+            let gHTML = '';
+            if(data.gmail.length === 0) gHTML = '<p style="font-size:13px; color:#888;">No pending tasks.</p>';
+            data.gmail.forEach(i => {
+                gHTML += `<div class="admin-card">
+                    <p><b>Email:</b> ${i.submitted_email}</p>
+                    <div class="action-btns">
+                        <button class="btn-approve" onclick="action('gmail_submissions', ${i.id}, 'approved')">Approve</button>
+                        <button class="btn-reject" onclick="action('gmail_submissions', ${i.id}, 'rejected')">Reject</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('gmailList').innerHTML = gHTML;
+
+            // Load Crypto
+            let cHTML = '';
+            if(data.crypto.length === 0) cHTML = '<p style="font-size:13px; color:#888;">No pending orders.</p>';
+            data.crypto.forEach(i => {
+                cHTML += `<div class="admin-card crypto">
+                    <p><b>Type:</b> ${i.order_type.toUpperCase()}</p>
+                    <p><b>Amount:</b> ${i.amount} ${i.coin}</p>
+                    <div class="action-btns">
+                        <button class="btn-approve" onclick="action('crypto_orders', ${i.id}, 'approved')">Verify</button>
+                        <button class="btn-reject" onclick="action('crypto_orders', ${i.id}, 'rejected')">Reject</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('cryptoList').innerHTML = cHTML;
+        });
+    }
+
+    function action(table, id, status) {
+        fetch('/api/admin/action', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({table: table, id: id, action: status})
+        }).then(r => r.json()).then(d => { 
+            alert(d.msg); 
+            loadData(); // Auto reload list
+        });
+    }
+    loadData();
+</script>
+{% endblock %}
