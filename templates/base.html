@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ================= SEO TAGS (DYNAMIC) ================= -->
+    <title>{% block title %}Social Orbit{% endblock %}</title>
+    <meta name="description" content="{% block description %}Default description for Social Orbit.{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}social orbit, app{% endblock %}">
+    
+    <!-- ================= WEB APP CSS ================= -->
+    <style>
+        :root { --primary: #007bff; --bg: #f0f2f5; --text: #333; --card: #fff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        body { background-color: var(--bg); color: var(--text); padding-top: 60px; padding-bottom: 75px; -webkit-tap-highlight-color: transparent;}
+        
+        /* Top Navigation Bar */
+        .top-nav { position: fixed; top: 0; width: 100%; background: var(--primary); color: white; height: 55px; display: flex; align-items: center; justify-content: center; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .top-nav h1 { font-size: 18px; font-weight: 600; letter-spacing: 0.5px;}
+
+        /* Main Content Container */
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+
+        /* Bottom Web App Footer / Nav */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; height: 60px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid #e1e1e1; padding-bottom: env(safe-area-inset-bottom); }
+        .bottom-nav a { text-decoration: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 11px; font-weight: 500; transition: color 0.3s;}
+        .bottom-nav a.active { color: var(--primary); }
+        .bottom-nav svg { width: 22px; height: 22px; margin-bottom: 4px; }
+    </style>
+    
+    <!-- পেজ অনুযায়ী এক্সট্রা CSS এর জন্য -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- TOP NAV -->
+    <div class="top-nav">
+        <h1>{% block nav_title %}Social Orbit{% endblock %}</h1>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- BOTTOM APP NAVIGATION -->
+    <div class="bottom-nav">
+        <a href="/" class="{% block nav_home %}{% endblock %}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Home
+        </a>
+        <a href="/admin" class="{% block nav_admin %}{% endblock %}">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            Admin
+        </a>
+    </div>
+
+    <!-- পেজ অনুযায়ী এক্সট্রা JS এর জন্য -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
